@@ -1,0 +1,32 @@
+{
+  "name": "openapi-definition",
+  "version": "0.0.1",
+  "description": "Tool to help build/define OpenApi Specification",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benrei/openapi-definition.git"
+  },
+  "keywords": [
+    "openapi",
+    "definition",
+    "swagger",
+    "specification",
+    "build",
+    "tool",
+    "helper"
+  ],
+  "author": "Benjamin Reiersølmoen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/benrei/openapi-definition/issues"
+  },
+  "homepage": "https://github.com/benrei/openapi-definition#readme",
+  "dependencies": {
+    "lodash.get": "^4.4.2",
+    "lodash.set": "^4.3.2"
+  }
+}
