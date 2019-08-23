@@ -12,6 +12,138 @@ $ npm install openapi-definition
 
 ## Usage
 
+### Examples
+```js
+const openApi = require('openapi-definition');
+const {Paths} = openApi;
+
+let openApiDef = {
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Sample API",
+    "description": "Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.",
+    "version": "0.1.9"
+  },
+  "servers": [
+    {
+      "url": "http://api.example.com/v1",
+      "description": "Optional server description, e.g. Main (production) server"
+    },
+    {
+      "url": "http://staging-api.example.com",
+      "description": "Optional server description, e.g. Internal staging server for testing"
+    }
+  ],
+  "paths": {}
+};
+
+//  Add User Schema
+let user = {
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "name": {
+      "type": "string"
+    }
+  }
+};
+openApi.add.components_schema(user,'User',openApiDef)
+
+//  Users Path
+const users_path = {
+  "get": {
+    "summary": "Returns a list of users.",
+    "description": "Optional extended description in CommonMark or HTML.",
+    "responses": {
+      "200": {
+        "description": "A JSON array of user names",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+//  Add users path
+openApi.add(users_path, Paths.PATHS, '/users', openApiDef)
+
+console.log(openApiDef)
+```
+
+#### Output
+```json
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Sample API",
+    "description": "Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.",
+    "version": "0.1.9"
+  },
+  "servers": [
+    {
+      "url": "http://api.example.com/v1",
+      "description": "Optional server description, e.g. Main (production) server"
+    },
+    {
+      "url": "http://staging-api.example.com",
+      "description": "Optional server description, e.g. Internal staging server for testing"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "summary": "Returns a list of users.",
+        "description": "Optional extended description in CommonMark or HTML.",
+        "responses": {
+          "200": {
+            "description": "A JSON array of user names",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+
+##Docs
 ### Paths - OpenAPI structure/properties
 Used to help update correct OpenApi definition property
 
@@ -98,133 +230,6 @@ openApi.set(schemas, Paths.components.SCHEMAS, openApiDef);
 
 ```
 
-## Examples
-```js
-const openApi = require('openapi-definition');
-const {Paths} = openApi;
-
-let openApiDef = {
-  "openapi": "3.0.0",
-  "info": {
-    "title": "Sample API",
-    "description": "Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.",
-    "version": "0.1.9"
-  },
-  "servers": [
-    {
-      "url": "http://api.example.com/v1",
-      "description": "Optional server description, e.g. Main (production) server"
-    },
-    {
-      "url": "http://staging-api.example.com",
-      "description": "Optional server description, e.g. Internal staging server for testing"
-    }
-  ],
-  "paths": {}
-};
-
-//  Add User Schema
-let user = {
-  "type": "object",
-  "properties": {
-    "id": {
-      "type": "integer",
-      "format": "int64"
-    },
-    "name": {
-      "type": "string"
-    }
-  }
-};
-openApi.add.components_schema(user,'User',openApiDef)
-
-//  Users Path
-const users_path = {
-  "get": {
-    "summary": "Returns a list of users.",
-    "description": "Optional extended description in CommonMark or HTML.",
-    "responses": {
-      "200": {
-        "description": "A JSON array of user names",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-//  Add users path
-openApi.add(users_path, Paths.PATHS, '/users', openApiDef)
-
-console.log(openApiDef)
-/*
-{
-  "openapi": "3.0.0",
-  "info": {
-    "title": "Sample API",
-    "description": "Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.",
-    "version": "0.1.9"
-  },
-  "servers": [
-    {
-      "url": "http://api.example.com/v1",
-      "description": "Optional server description, e.g. Main (production) server"
-    },
-    {
-      "url": "http://staging-api.example.com",
-      "description": "Optional server description, e.g. Internal staging server for testing"
-    }
-  ],
-  "components": {
-    "schemas": {
-      "User": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "name": {
-            "type": "string"
-          }
-        }
-      }
-    }
-  }
-  "paths": {
-    "/users": {
-      "get": {
-        "summary": "Returns a list of users.",
-        "description": "Optional extended description in CommonMark or HTML.",
-        "responses": {
-          "200": {
-            "description": "A JSON array of user names",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-*/
-```
 
 ## License
 
