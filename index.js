@@ -70,7 +70,7 @@ const set = (json, path, openApiDef) =>{
  * @param key {string} {string}. Object key name
  * @param openApiDef {object}, openApiDefinition object
  */
-const object_single = (json, path, key, openApiDef) =>{
+const oneOf = (json, path, key, openApiDef) =>{
   if(!json) throw Error('[json] can not be empty');
   if(!path) throw Error('[path] can not be empty');
   if(!path in Paths) throw Error('[path] must be of type {Paths}');
@@ -85,10 +85,10 @@ const object_single = (json, path, key, openApiDef) =>{
  * @param path {Paths}, Ex: Paths.components.SCHEMA
  * @param openApiDef {object}, openApiDefinition object
  */
-const object_many = (objectOfData, path, openApiDef) =>{
+const manyOf = (objectOfData, path, openApiDef) =>{
   for (const key in objectOfData){
-    const data = objectOfData[key];
-    add(key, path, data, openApiDef)
+    const json = objectOfData[key];
+    oneOf(json, path, key, openApiDef)
   }
 };
 
@@ -103,17 +103,13 @@ const object_to_array = (json, path, openApiDefinition) =>{
   if (Array.isArray(array)) array.push(...json)
 };
 
-
+//  Export
 let exportObj = {};
+
 exportObj.paths = Paths;
-
-exportObj.set_OPENAPI = (json, openApiDefinition)=>{
-  set(json, Paths.OPENAPI, openApiDefinition)
-};
-
 exportObj.add = {
-  object_single,
-  object_many,
+  oneOf,
+  manyOf,
   object_to_array,
   components_callback : (callback, key, openApiDefinition)=> _set(openApiDefinition, Paths.components.CALLBACKS+'.'+key, callback),
   components_example : (example, key, openApiDefinition)=> _set(openApiDefinition, Paths.components.EXAMPLES+'.'+key, example),
@@ -135,6 +131,7 @@ exportObj.set = {
   info_contact: (contact, openApiDefinition) => set(contact, Paths.info.contact.ROOT, openApiDefinition),
   info_license: (license, openApiDefinition) => set(license, Paths.info.license.ROOT, openApiDefinition),
   openapi: (openapi, openApiDefinition) => set(openapi, Paths.OPENAPI, openApiDefinition),
+  other: (json, path, openApiDefinition)=> set(json, path, openApiDefinition),
 };
 
 module.exports = exportObj;

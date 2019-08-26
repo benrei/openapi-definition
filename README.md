@@ -202,31 +202,87 @@ const openApi = require('openapi-definition');
 const {Paths} = openApi;
 
 let openApiDef = {};      //  Your OpenApi definition
+
 let schemas = {
   schema_1: 'Some data',
   schema_2: 'Some more data',
   schema_3: {description: 'A description', type: 'object'},
 };
+
+let dummyJSON = {
+  //  Some data
+};
+
 let server = { 
   url: 'https://staging.gigantic-server.com/v1', 
   description: 'Staging server'
 };
 
 //  Add data to OpenApi definition. Uses `schema_1` as property name
-openApi.add.components_schema(schemas.schema_1, 'schema_1', openApiDef);
-
-//  Add data to OpenApi definition. Uses `schema_1` as property name
-openApi.add.object_single(schemas.schema_1, Paths.components.SCHEMAS, 'schema_1',  openApiDef);
+openApi.add.oneOf(schemas.schema_1, Paths.components.SCHEMAS, 'schema_1',  openApiDef);
 
 //  Add data to OpenApi definition. Uses the `object's keys` as property names
-openApi.add.object_many(schemas, Paths.components.SCHEMAS, openApiDef);
+openApi.add.manyOf(schemas, Paths.components.SCHEMAS, openApiDef);
 
 //  Add data to OpenApi definition where 'Paths' is an array
 openApi.add.object_to_array(server, Paths.SERVERS, openApiDef);
 
+//  Add callback to OpenApi definition.
+openApi.add.components_callback(dummyJSON, openApiDef);
 
-//  Sets/overrides property in OpenApi definition object
-openApi.set(schemas, Paths.components.SCHEMAS, openApiDef);
+//  Add example to OpenApi definition.
+openApi.add.components_example(dummyJSON, openApiDef);
+
+//  Add header to OpenApi definition.
+openApi.add.components_header(dummyJSON, openApiDef);
+
+//  Add link to OpenApi definition.
+openApi.add.components_link(dummyJSON, openApiDef);
+
+//  Add parameter to OpenApi definition.
+openApi.add.components_parameter(dummyJSON, openApiDef);
+
+//  Add requestBody to OpenApi definition.
+openApi.add.components_requestBody(dummyJSON, openApiDef);
+
+//  Add response to OpenApi definition.
+openApi.add.components_response(dummyJSON, openApiDef);
+
+//  Add schema to OpenApi definition.
+openApi.add.components_schema(schemas.schema_1, openApiDef);
+
+//  Add securityScheme to OpenApi definition.
+openApi.add.components_securityScheme(dummyJSON, openApiDef);
+
+//  Add path to OpenApi definition.
+openApi.add.path(dummyJSON, openApiDef);
+
+//  Add server to OpenApi definition.
+openApi.add.server(server, openApiDef);
+
+//  Add security to OpenApi definition.
+openApi.add.security(dummyJSON, openApiDef);
+
+//  Add tags to OpenApi definition.
+openApi.add.tags(dummyJSON, openApiDef);
+
+//  Sets/overrides path 'externalDocs' in OpenApi definition.
+openApi.set.externalDocs(dummyJSON, Paths.components.SCHEMAS, openApiDef);
+
+//  Sets/overrides path 'info' in OpenApi definition.
+openApi.set.info(dummyJSON, Paths.components.SCHEMAS, openApiDef);
+
+//  Sets/overrides path 'info_contact' in OpenApi definition.
+openApi.set.info_contact(dummyJSON, Paths.components.SCHEMAS, openApiDef);
+
+//  Sets/overrides path 'info_license' in OpenApi definition.
+openApi.set.info_license(dummyJSON, Paths.components.SCHEMAS, openApiDef);
+
+//  Sets/overrides path 'openapi' in OpenApi definition.
+openApi.set.openapi(dummyJSON, Paths.components.SCHEMAS, openApiDef);
+
+//  Sets/overrides path 'yourOwnPath' in OpenApi definition.
+openApi.set.other(dummyJSON, Paths.components.EXAMPLES || 'components.examples', openApiDef);
 
 ```
 
