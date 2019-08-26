@@ -224,8 +224,8 @@ openApi.add.oneOf(schemas.schema_1, Paths.components.SCHEMAS, 'schema_1',  openA
 //  Add data to OpenApi definition. Uses the `object's keys` as property names
 openApi.add.manyOf(schemas, Paths.components.SCHEMAS, openApiDef);
 
-//  Add data to OpenApi definition where 'Paths' is an array
-openApi.add.object_to_array(server, Paths.SERVERS, openApiDef);
+//  Add data to OpenApi definition where property is an array
+openApi.add.oneOf_to_array(server, Paths.SERVERS, openApiDef);
 
 //  Add callback to OpenApi definition.
 openApi.add.components_callback(dummyJSON, openApiDef);

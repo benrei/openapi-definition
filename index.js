@@ -98,7 +98,7 @@ const manyOf = (objectOfData, path, openApiDef) =>{
  * @param path {Paths}, Ex: Paths.components.SCHEMA
  * @param openApiDefinition {object}, openApiDefinition object
  */
-const object_to_array = (json, path, openApiDefinition) =>{
+const oneOf_to_array = (json, path, openApiDefinition) =>{
   let array = _get(openApiDefinition, path);
   if (Array.isArray(array)) array.push(...json)
 };
@@ -110,7 +110,7 @@ exportObj.paths = Paths;
 exportObj.add = {
   oneOf,
   manyOf,
-  object_to_array,
+  oneOf_to_array,
   components_callback : (callback, key, openApiDefinition)=> _set(openApiDefinition, Paths.components.CALLBACKS+'.'+key, callback),
   components_example : (example, key, openApiDefinition)=> _set(openApiDefinition, Paths.components.EXAMPLES+'.'+key, example),
   components_header : (header, key, openApiDefinition)=> _set(openApiDefinition, Paths.components.HEADERS+'.'+key, header),
@@ -120,10 +120,10 @@ exportObj.add = {
   components_response : (response, key, openApiDefinition)=> _set(openApiDefinition, Paths.components.RESPONSES+'.'+key, response),
   components_schema : (schema, key, openApiDefinition)=> _set(openApiDefinition, Paths.components.SCHEMAS+'.'+key, schema),
   components_securityScheme : (securityScheme, key, openApiDefinition)=> _set(openApiDefinition, Paths.components.SECURITY_SCHEMES+'.'+key, securityScheme),
-  path: (path, key, openApiDefinition)=> object_to_array(path, Paths.paths+key, openApiDefinition),
-  server: (server, openApiDefinition)=> object_to_array(server, Paths.SERVERS, openApiDefinition),
-  security: (security, openApiDefinition)=> object_to_array(security, Paths.SECURITY, openApiDefinition),
-  tags: (tag, openApiDefinition)=> object_to_array(tag, Paths.TAGS, openApiDefinition),
+  path: (path, key, openApiDefinition)=> oneOf_to_array(path, Paths.paths+key, openApiDefinition),
+  server: (server, openApiDefinition)=> oneOf_to_array(server, Paths.SERVERS, openApiDefinition),
+  security: (security, openApiDefinition)=> oneOf_to_array(security, Paths.SECURITY, openApiDefinition),
+  tags: (tag, openApiDefinition)=> oneOf_to_array(tag, Paths.TAGS, openApiDefinition),
 };
 exportObj.set = {
   externalDocs: (externalDocs, openApiDefinition) => set(externalDocs, Paths.externalDocs, openApiDefinition),
