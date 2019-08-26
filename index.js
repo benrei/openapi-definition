@@ -104,7 +104,7 @@ const object_to_array = (json, path, openApiDefinition) =>{
 };
 
 
-let exportObj = Paths;
+let exportObj = {};
 exportObj.paths = Paths;
 
 exportObj.set_OPENAPI = (json, openApiDefinition)=>{
