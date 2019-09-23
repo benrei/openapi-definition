@@ -1,6 +1,6 @@
 {
   "name": "openapi-definition",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "Tool to help build/define OpenApi Specification",
   "main": "index.js",
   "scripts": {

@@ -1,7 +1,7 @@
 # openapi-definition
 [![NPM version](https://img.shields.io/npm/v/openapi-definition.svg)](https://www.npmjs.com/package/openapi-definition)
 
-Tool to help build/define OpenApi Specification
+Tool to help build/define OpenAPI Specification
 
 
 ## Installation
@@ -11,13 +11,11 @@ $ npm install openapi-definition
 ```
 
 ## Usage
+This is how to build your OpenAPI Specification by using `openapi-definition`
 
-### Examples
+#### OpenAPI Specification Sample
 ```js
-const openApi = require('openapi-definition');
-const {Paths} = openApi;
-
-let openApiDef = {
+let yourOpenApi = {
   "openapi": "3.0.0",
   "info": {
     "title": "Sample API",
@@ -28,14 +26,17 @@ let openApiDef = {
     {
       "url": "http://api.example.com/v1",
       "description": "Optional server description, e.g. Main (production) server"
-    },
-    {
-      "url": "http://staging-api.example.com",
-      "description": "Optional server description, e.g. Internal staging server for testing"
     }
   ],
   "paths": {}
 };
+```
+
+### Example - Add `User` Schema to OpenAPI Specification
+```js
+const openApi = require('openapi-definition');
+const {Paths} = openApi;
+let yourOpenApi = {...};
 
 //  Add User Schema
 let user = {
@@ -50,7 +51,50 @@ let user = {
     }
   }
 };
-openApi.add.components_schema(user,'User',openApiDef)
+openApi.add.components_schema(user,'User',yourOpenApi)
+
+console.log(yourOpenApi)
+```
+
+#### Output
+```json
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Sample API",
+    "description": "Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.",
+    "version": "0.1.9"
+  },
+  "servers": [
+    {
+      "url": "http://api.example.com/v1",
+      "description": "Optional server description, e.g. Main (production) server"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+### Example - Add path `/users` to OpenAPI Specification
+```js
+const openApi = require('openapi-definition');
+const {Paths} = openApi;
+let yourOpenApi = {...};
 
 //  Users Path
 const users_path = {
@@ -76,9 +120,12 @@ const users_path = {
 }
 
 //  Add users path
-openApi.add(users_path, Paths.PATHS, '/users', openApiDef)
 
-console.log(openApiDef)
+openApi.add.path(users_path, '/users', yourOpenApi);
+//  or
+openApi.add.oneOf(users_path, Paths.PATHS, '/users', yourOpenApi);
+
+console.log(yourOpenApi)
 ```
 
 #### Output
@@ -94,28 +141,9 @@ console.log(openApiDef)
     {
       "url": "http://api.example.com/v1",
       "description": "Optional server description, e.g. Main (production) server"
-    },
-    {
-      "url": "http://staging-api.example.com",
-      "description": "Optional server description, e.g. Internal staging server for testing"
     }
   ],
-  "components": {
-    "schemas": {
-      "User": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "name": {
-            "type": "string"
-          }
-        }
-      }
-    }
-  },
+  "components": {},
   "paths": {
     "/users": {
       "get": {
@@ -144,8 +172,8 @@ console.log(openApiDef)
 
 
 ##Docs
-### Paths - OpenAPI structure/properties
-Used to help update correct OpenApi definition property
+### Paths - OpenAPI document fields
+All OpenAPI fields. Holds all object `paths` to the OpenAPI root document.
 
 ```js
 //  const openApi = require('openapi-definition');
@@ -201,7 +229,7 @@ const Paths = {
 const openApi = require('openapi-definition');
 const {Paths} = openApi;
 
-let openApiDef = {};      //  Your OpenApi definition
+let openApiDef = {};      //  Your OpenAPI definition
 
 let schemas = {
   schema_1: 'Some data',
@@ -218,71 +246,71 @@ let server = {
   description: 'Staging server'
 };
 
-//  Add data to OpenApi definition. Uses `schema_1` as property name
+//  Add Schema schemas.schema_1 to OpenAPI definition. Uses `schema_1` as property name
 openApi.add.oneOf(schemas.schema_1, Paths.components.SCHEMAS, 'schema_1',  openApiDef);
 
-//  Add data to OpenApi definition. Uses the `object's keys` as property names
+//  Add `schemas` to OpenAPI definition. Uses the `object's keys` as property names
 openApi.add.manyOf(schemas, Paths.components.SCHEMAS, openApiDef);
 
-//  Add data to OpenApi definition where property is an array
+//  Add data to OpenAPI definition where property is an array
 openApi.add.oneOf_to_array(server, Paths.SERVERS, openApiDef);
 
-//  Add callback to OpenApi definition.
-openApi.add.components_callback(dummyJSON, openApiDef);
+//  Add callback to OpenAPI definition.
+openApi.add.components_callback(dummyJSON, key, openApiDef);
 
-//  Add example to OpenApi definition.
-openApi.add.components_example(dummyJSON, openApiDef);
+//  Add example to OpenAPI definition.
+openApi.add.components_example(dummyJSON, key, openApiDef);
 
-//  Add header to OpenApi definition.
-openApi.add.components_header(dummyJSON, openApiDef);
+//  Add header to OpenAPI definition.
+openApi.add.components_header(dummyJSON, key, openApiDef);
 
-//  Add link to OpenApi definition.
-openApi.add.components_link(dummyJSON, openApiDef);
+//  Add link to OpenAPI definition.
+openApi.add.components_link(dummyJSON, key, openApiDef);
 
-//  Add parameter to OpenApi definition.
-openApi.add.components_parameter(dummyJSON, openApiDef);
+//  Add parameter to OpenAPI definition.
+openApi.add.components_parameter(dummyJSON, 'limitParam', openApiDef);
 
-//  Add requestBody to OpenApi definition.
-openApi.add.components_requestBody(dummyJSON, openApiDef);
+//  Add requestBody to OpenAPI definition.
+openApi.add.components_requestBody(dummyJSON, key, openApiDef);
 
-//  Add response to OpenApi definition.
-openApi.add.components_response(dummyJSON, openApiDef);
+//  Add response to OpenAPI definition.
+openApi.add.components_response(dummyJSON, 'NotFound', openApiDef);
 
-//  Add schema to OpenApi definition.
-openApi.add.components_schema(schemas.schema_1, openApiDef);
+//  Add schema to OpenAPI definition.
+openApi.add.components_schema(schemas.schema_1, 'yourSchema', openApiDef);
 
-//  Add securityScheme to OpenApi definition.
-openApi.add.components_securityScheme(dummyJSON, openApiDef);
+//  Add securityScheme to OpenAPI definition.
+openApi.add.components_securityScheme(dummyJSON, 'api_key', openApiDef);
 
-//  Add path to OpenApi definition.
-openApi.add.path(dummyJSON, openApiDef);
+//  Add path to OpenAPI definition.
+openApi.add.path(dummyJSON, '/yourPath', openApiDef);
 
-//  Add server to OpenApi definition.
+//  Add server to OpenAPI definition.
 openApi.add.server(server, openApiDef);
 
-//  Add security to OpenApi definition.
+//  Add security to OpenAPI definition.
 openApi.add.security(dummyJSON, openApiDef);
 
-//  Add tags to OpenApi definition.
+//  Add tags to OpenAPI definition.
 openApi.add.tags(dummyJSON, openApiDef);
 
-//  Sets/overrides path 'externalDocs' in OpenApi definition.
-openApi.set.externalDocs(dummyJSON, Paths.components.SCHEMAS, openApiDef);
+//  Sets/overrides path 'externalDocs' in OpenAPI definition.
+openApi.set.externalDocs(dummyJSON, openApiDef);
 
-//  Sets/overrides path 'info' in OpenApi definition.
-openApi.set.info(dummyJSON, Paths.components.SCHEMAS, openApiDef);
+//  Sets/overrides path 'info' in OpenAPI definition.
+openApi.set.info(dummyJSON, openApiDef);
 
-//  Sets/overrides path 'info_contact' in OpenApi definition.
-openApi.set.info_contact(dummyJSON, Paths.components.SCHEMAS, openApiDef);
+//  Sets/overrides path 'info_contact' in OpenAPI definition.
+openApi.set.info_contact(dummyJSON, openApiDef);
 
-//  Sets/overrides path 'info_license' in OpenApi definition.
-openApi.set.info_license(dummyJSON, Paths.components.SCHEMAS, openApiDef);
+//  Sets/overrides path 'info_license' in OpenAPI definition.
+openApi.set.info_license(dummyJSON, openApiDef);
 
-//  Sets/overrides path 'openapi' in OpenApi definition.
-openApi.set.openapi(dummyJSON, Paths.components.SCHEMAS, openApiDef);
+//  Sets/overrides path 'openapi' in OpenAPI definition.
+openApi.set.openapi(dummyJSON, openApiDef);
 
-//  Sets/overrides path 'yourOwnPath' in OpenApi definition.
-openApi.set.other(dummyJSON, Paths.components.EXAMPLES || 'components.examples', openApiDef);
+//  Sets/overrides path 'yourOwnPath' in OpenAPI definition.
+openApi.set.other(dummyJSON, 'yourOwnPath' || 'components.examples', openApiDef);
 
 ```
 
