@@ -32,7 +32,7 @@ let yourOpenApi = {
 };
 ```
 
-### Example - Add `User` Schema to OpenAPI Specification
+### Add `User` Schema to OpenAPI Specification
 ```js
 const openApi = require('openapi-definition');
 const {Paths} = openApi;
@@ -90,7 +90,7 @@ console.log(yourOpenApi)
 }
 ```
 
-### Example - Add path `/users` to OpenAPI Specification
+### Add path `/users` to OpenAPI Specification
 ```js
 const openApi = require('openapi-definition');
 const {Paths} = openApi;
@@ -223,7 +223,7 @@ const Paths = {
 }
 ```
 
-###  Functions
+###  All functions
 
 ```js
 const openApi = require('openapi-definition');
