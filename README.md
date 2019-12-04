@@ -16,26 +16,26 @@ This is how to build your OpenAPI Specification by using `openapi-definition`
 #### OpenAPI Specification Sample
 ```js
 let yourOpenApi = {
-  "openapi": "3.0.0",
-  "info": {
-    "title": "Sample API",
-    "description": "Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.",
-    "version": "0.1.9"
-  },
-  "servers": [
-    {
-      "url": "http://api.example.com/v1",
-      "description": "Optional server description, e.g. Main (production) server"
-    }
-  ],
-  "paths": {}
-};
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Sample API",
+      "description": "Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.",
+      "version": "0.1.9"
+    },
+    "servers": [
+      {
+        "url": "http://api.example.com/v1",
+        "description": "Optional server description, e.g. Main (production) server"
+      }
+    ],
+    "paths": {}
+  };
 ```
 
 ### Add `User` Schema to OpenAPI Specification
 ```js
 const openApi = require('openapi-definition');
-const {Paths} = openApi;
+const { OpenApi } = openApi;
 let yourOpenApi = {...};
 
 //  Add User Schema
@@ -51,7 +51,7 @@ let user = {
     }
   }
 };
-openApi.add.components_schema(user,'User',yourOpenApi)
+openApi.add.components_schema(yourOpenApi, 'User', user)
 
 console.log(yourOpenApi)
 ```
@@ -93,7 +93,7 @@ console.log(yourOpenApi)
 ### Add path `/users` to OpenAPI Specification
 ```js
 const openApi = require('openapi-definition');
-const {Paths} = openApi;
+const { OpenApi } = openApi;
 let yourOpenApi = {...};
 
 //  Users Path
@@ -121,9 +121,9 @@ const users_path = {
 
 //  Add users path
 
-openApi.add.path(users_path, '/users', yourOpenApi);
+openApi.add.path(yourOpenApi, '/users', users_path);
 //  or
-openApi.add.oneOf(users_path, Paths.PATHS, '/users', yourOpenApi);
+openApi.set.custom(yourOpenApi, `${OpenApi.PATHS}/users`, users_path);
 
 console.log(yourOpenApi)
 ```
@@ -172,14 +172,14 @@ console.log(yourOpenApi)
 
 
 ##Docs
-### Paths - OpenAPI document fields
+### OpenApi - OpenAPI document fields
 All OpenAPI fields. Holds all object `paths` to the OpenAPI root document.
 
 ```js
 //  const openApi = require('openapi-definition');
-//  const {Paths} = openApi;
+//  const {OpenApi} = openApi;
 
-const Paths = {
+const OpenApi = {
   OPENAPI: 'openapi',
   info: {
     DESCRIPTION: 'info.description',
@@ -227,7 +227,7 @@ const Paths = {
 
 ```js
 const openApi = require('openapi-definition');
-const {Paths} = openApi;
+const { OpenApi } = openApi;
 
 let openApiDef = {};      //  Your OpenAPI definition
 
@@ -245,15 +245,6 @@ let server = {
   url: 'https://staging.gigantic-server.com/v1', 
   description: 'Staging server'
 };
-
-//  Add Schema schemas.schema_1 to OpenAPI definition. Uses `schema_1` as property name
-openApi.add.oneOf(schemas.schema_1, Paths.components.SCHEMAS, 'schema_1',  openApiDef);
-
-//  Add `schemas` to OpenAPI definition. Uses the `object's keys` as property names
-openApi.add.manyOf(schemas, Paths.components.SCHEMAS, openApiDef);
-
-//  Add data to OpenAPI definition where property is an array
-openApi.add.oneOf_to_array(server, Paths.SERVERS, openApiDef);
 
 //  Add callback to OpenAPI definition.
 openApi.add.components_callback(dummyJSON, key, openApiDef);
@@ -292,7 +283,7 @@ openApi.add.server(server, openApiDef);
 openApi.add.security(dummyJSON, openApiDef);
 
 //  Add tags to OpenAPI definition.
-openApi.add.tags(dummyJSON, openApiDef);
+openApi.add.tag(dummyJSON, openApiDef);
 
 //  Sets/overrides path 'externalDocs' in OpenAPI definition.
 openApi.set.externalDocs(dummyJSON, openApiDef);

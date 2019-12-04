@@ -51,87 +51,43 @@ const OpenApi = {
 };
 
 /**
- * Set data to OpenAPI definition path
- * @param json {*}. data
+ * Add data to OpenAPI definition where 'property' is an array
+ * @param definition {object}, OpenAPI definition
  * @param path {OpenApi}, Ex: OpenApi.components.SCHEMA
- * @param openApiDef {object}, openApiDefinition object
+ * @param value {object}, Ex: {prop1: val1, ...}
  */
-const set = (json, path, openApiDef) =>{
-  if(!json) throw Error('[json] can not be empty');
-  if(!path) throw Error('[path] can not be empty');
-  if(!openApiDef) throw Error('[openApiDef] can not be empty');
-  _set(openApiDef, path, json);
-};
-
-/**
- * Adds data to OpenAPI definition
- * @param json {*}. JSON data
- * @param path {OpenApi}, Ex: OpenApi.components.SCHEMA
- * @param key {string} {string}. Object key name
- * @param openApiDef {object}, openApiDefinition object
- */
-const oneOf = (json, path, key, openApiDef) =>{
-  if(!json) throw Error('[json] can not be empty');
-  if(!path) throw Error('[path] can not be empty');
-  if(!path in OpenApi) throw Error('[path] must be of type {Paths}');
-  if(!key) throw Error('[key] can not be empty');
-  if(!openApiDef) throw Error('[openApiDef] can not be empty');
-  _set(openApiDef, path+'.'+key, json);
-};
-
-/**
- * Adds data to OpenAPI definition. Uses object keys as property names
- * @param objectOfData {object}. object containing openAPI JSON
- * @param path {OpenApi}, Ex: OpenApi.components.SCHEMA
- * @param openApiDef {object}, openApiDefinition object
- */
-const manyOf = (objectOfData, path, openApiDef) =>{
-  for (const key in objectOfData){
-    const json = objectOfData[key];
-    oneOf(json, path, key, openApiDef)
-  }
-};
-
-/**
- * Add data to OpenAPI definition where 'Paths' is an array
- * @param json {object}, openAPI json data
- * @param path {OpenApi}, Ex: OpenApi.components.SCHEMA
- * @param openApiDefinition {object}, openApiDefinition object
- */
-const oneOf_to_array = (json, path, openApiDefinition) =>{
-  let array = _get(openApiDefinition, path);
-  if (Array.isArray(array)) array.push(...json)
+const addToArray = (definition, path, value) =>{
+  let array = _get(definition, path);
+  if (Array.isArray(array)) array.push(...value);
+  _set(definition, path, array)
 };
 
 //  Export
 let exportObj = {};
 
-exportObj.paths = OpenApi;
+exportObj.OpenApi = OpenApi;
 exportObj.add = {
-  oneOf,
-  manyOf,
-  oneOf_to_array,
-  components_callback : (callback, key, openApiDefinition)=> _set(openApiDefinition, OpenApi.components.CALLBACKS+'.'+key, callback),
-  components_example : (example, key, openApiDefinition)=> _set(openApiDefinition, OpenApi.components.EXAMPLES+'.'+key, example),
-  components_header : (header, key, openApiDefinition)=> _set(openApiDefinition, OpenApi.components.HEADERS+'.'+key, header),
-  components_link : (link, key, openApiDefinition)=> _set(openApiDefinition, OpenApi.components.LINKS+'.'+key, link),
-  components_parameter : (parameter, key, openApiDefinition)=> _set(openApiDefinition, OpenApi.components.PARAMETERS+'.'+key, parameter),
-  components_requestBody : (requestBody, key, openApiDefinition)=> _set(openApiDefinition, OpenApi.components.REQUEST_BODIES+'.'+key, requestBody),
-  components_response : (response, key, openApiDefinition)=> _set(openApiDefinition, OpenApi.components.RESPONSES+'.'+key, response),
-  components_schema : (schema, key, openApiDefinition)=> _set(openApiDefinition, OpenApi.components.SCHEMAS+'.'+key, schema),
-  components_securityScheme : (securityScheme, key, openApiDefinition)=> _set(openApiDefinition, OpenApi.components.SECURITY_SCHEMES+'.'+key, securityScheme),
-  path: (path, key, openApiDefinition)=> _set(path, OpenApi.paths+'.'+key, openApiDefinition),
-  server: (server, openApiDefinition)=> oneOf_to_array(server, OpenApi.SERVERS, openApiDefinition),
-  security: (security, openApiDefinition)=> oneOf_to_array(security, OpenApi.SECURITY, openApiDefinition),
-  tags: (tag, openApiDefinition)=> oneOf_to_array(tag, OpenApi.TAGS, openApiDefinition),
+  components_callback : (definition, key, obj)=> _set(definition, `${OpenApi.components.CALLBACKS}.${key}`, obj),
+  components_example : (definition, key, obj)=> _set(definition, `${OpenApi.components.EXAMPLES}.${key}`, obj),
+  components_header : (definition, key, obj)=> _set(definition, `${OpenApi.components.HEADERS}.${key}`, obj),
+  components_link : (definition, key, obj)=> _set(definition, `${OpenApi.components.LINKS}.${key}`, obj),
+  components_parameter : (definition, key, obj)=> _set(definition, `${OpenApi.components.PARAMETERS}.${key}`, obj),
+  components_requestBody : (definition, key, obj)=> _set(definition, `${OpenApi.components.REQUEST_BODIES}.${key}`, obj),
+  components_response : (definition, key, obj)=> _set(definition, `${OpenApi.components.RESPONSES}.${key}`, obj),
+  components_schema : (definition, key, obj)=> _set(definition, `${OpenApi.components.SCHEMAS}.${key}`, obj),
+  components_securityScheme : (definition, key, obj)=> _set(definition, `${OpenApi.components.SECURITY_SCHEMES}.${key}`, obj),
+  path : (definition, key, obj)=> _set(definition, `${OpenApi.paths}.${key}`, obj),
+  server: (definition, obj)=> addToArray(definition, OpenApi.SERVERS, obj),
+  security: (definition, obj)=> addToArray(definition, OpenApi.SECURITY, obj),
+  tag: (definition, obj)=> addToArray(definition, OpenApi.TAGS, obj),
 };
 exportObj.set = {
-  externalDocs: (externalDocs, openApiDefinition) => set(externalDocs, OpenApi.externalDocs, openApiDefinition),
-  info: (info, openApiDefinition) => set(info, OpenApi.info.ROOT, openApiDefinition),
-  info_contact: (contact, openApiDefinition) => set(contact, OpenApi.info.contact.ROOT, openApiDefinition),
-  info_license: (license, openApiDefinition) => set(license, OpenApi.info.license.ROOT, openApiDefinition),
-  openapi: (openapi, openApiDefinition) => set(openapi, OpenApi.OPENAPI, openApiDefinition),
-  other: (json, path, openApiDefinition)=> set(json, path, openApiDefinition),
+  externalDocs: (definition, value) => _set(definition, OpenApi.externalDocs, value),
+  info: (definition, value) => _set(definition, OpenApi.info.ROOT, value),
+  info_contact: (definition, value) => _set(definition, OpenApi.info.contact.ROOT, value),
+  info_license: (definition, value) => _set(definition, OpenApi.info.license.ROOT, value),
+  openapi: (definition, value) => _set(definition, OpenApi.OPENAPI, value),
+  other: (definition, path, value) => _set(definition, path, value),
 };
 
 module.exports = exportObj;
