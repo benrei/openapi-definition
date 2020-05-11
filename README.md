@@ -34,8 +34,8 @@ let yourOpenApi = {
 
 ### Add `User` Schema to OpenAPI Specification
 ```js
-const openApi = require('openapi-definition');
-const { OpenApi } = openApi;
+const od = require('openapi-definition');
+const { add, OpenApi, set } = od;
 let yourOpenApi = {...};
 
 //  Add User Schema
@@ -51,7 +51,8 @@ let user = {
     }
   }
 };
-openApi.add.components_schema(yourOpenApi, 'User', user)
+od.add.components_schema(yourOpenApi, 'User', user)
+//  add.components_schema(yourOpenApi, 'User', user)
 
 console.log(yourOpenApi)
 ```
@@ -92,8 +93,8 @@ console.log(yourOpenApi)
 
 ### Add path `/users` to OpenAPI Specification
 ```js
-const openApi = require('openapi-definition');
-const { OpenApi } = openApi;
+const od = require('openapi-definition');
+const { OpenApi } = od;
 let yourOpenApi = {...};
 
 //  Users Path
@@ -121,9 +122,9 @@ const users_path = {
 
 //  Add users path
 
-openApi.add.path(yourOpenApi, '/users', users_path);
+od.add.path(yourOpenApi, '/users', users_path);
 //  or
-openApi.set.custom(yourOpenApi, `${OpenApi.PATHS}/users`, users_path);
+od.set.custom(yourOpenApi, `${OpenApi.PATHS}/users`, users_path);
 
 console.log(yourOpenApi)
 ```
@@ -176,10 +177,14 @@ console.log(yourOpenApi)
 All OpenAPI fields. Holds all object `paths` to the OpenAPI root document.
 
 ```js
-//  const openApi = require('openapi-definition');
-//  const {OpenApi} = openApi;
+const od = require('openapi-definition');
+const {OpenApi} = od;
+console.log(OpenApi)
+```
 
-const OpenApi = {
+**Output**
+```json
+{
   OPENAPI: 'openapi',
   info: {
     DESCRIPTION: 'info.description',
@@ -226,8 +231,8 @@ const OpenApi = {
 ###  All functions
 
 ```js
-const openApi = require('openapi-definition');
-const { OpenApi } = openApi;
+const od = require('openapi-definition');
+const { OpenApi } = od;
 
 let openApiDef = {};      //  Your OpenAPI definition
 
@@ -239,6 +244,7 @@ let schemas = {
 
 let dummyJSON = {
   //  Some data
+  //  ...
 };
 
 let server = { 
@@ -247,61 +253,61 @@ let server = {
 };
 
 //  Add callback to OpenAPI definition.
-openApi.add.components_callback(dummyJSON, key, openApiDef);
+od.add.components_callback(dummyJSON, key, openApiDef);
 
 //  Add example to OpenAPI definition.
-openApi.add.components_example(dummyJSON, key, openApiDef);
+od.add.components_example(dummyJSON, key, openApiDef);
 
 //  Add header to OpenAPI definition.
-openApi.add.components_header(dummyJSON, key, openApiDef);
+od.add.components_header(dummyJSON, key, openApiDef);
 
 //  Add link to OpenAPI definition.
-openApi.add.components_link(dummyJSON, key, openApiDef);
+od.add.components_link(dummyJSON, key, openApiDef);
 
 //  Add parameter to OpenAPI definition.
-openApi.add.components_parameter(dummyJSON, 'limitParam', openApiDef);
+od.add.components_parameter(dummyJSON, 'limitParam', openApiDef);
 
 //  Add requestBody to OpenAPI definition.
-openApi.add.components_requestBody(dummyJSON, key, openApiDef);
+od.add.components_requestBody(dummyJSON, key, openApiDef);
 
 //  Add response to OpenAPI definition.
-openApi.add.components_response(dummyJSON, 'NotFound', openApiDef);
+od.add.components_response(dummyJSON, 'NotFound', openApiDef);
 
 //  Add schema to OpenAPI definition.
 openApi.add.components_schema(schemas.schema_1, 'yourSchema', openApiDef);
 
 //  Add securityScheme to OpenAPI definition.
-openApi.add.components_securityScheme(dummyJSON, 'api_key', openApiDef);
+od.add.components_securityScheme(dummyJSON, 'api_key', openApiDef);
 
 //  Add path to OpenAPI definition.
-openApi.add.path(dummyJSON, '/yourPath', openApiDef);
+od.add.path(dummyJSON, '/yourPath', openApiDef);
 
 //  Add server to OpenAPI definition.
-openApi.add.server(server, openApiDef);
+od.add.server(server, openApiDef);
 
 //  Add security to OpenAPI definition.
-openApi.add.security(dummyJSON, openApiDef);
+od.add.security(dummyJSON, openApiDef);
 
 //  Add tags to OpenAPI definition.
-openApi.add.tag(dummyJSON, openApiDef);
+od.add.tag(dummyJSON, openApiDef);
 
 //  Sets/overrides path 'externalDocs' in OpenAPI definition.
-openApi.set.externalDocs(dummyJSON, openApiDef);
+od.set.externalDocs(dummyJSON, openApiDef);
 
 //  Sets/overrides path 'info' in OpenAPI definition.
-openApi.set.info(dummyJSON, openApiDef);
+od.set.info(dummyJSON, openApiDef);
 
 //  Sets/overrides path 'info_contact' in OpenAPI definition.
-openApi.set.info_contact(dummyJSON, openApiDef);
+od.set.info_contact(dummyJSON, openApiDef);
 
 //  Sets/overrides path 'info_license' in OpenAPI definition.
-openApi.set.info_license(dummyJSON, openApiDef);
+od.set.info_license(dummyJSON, openApiDef);
 
 //  Sets/overrides path 'openapi' in OpenAPI definition.
-openApi.set.openapi(dummyJSON, openApiDef);
+od.set.openapi(dummyJSON, openApiDef);
 
 //  Sets/overrides path 'yourOwnPath' in OpenAPI definition.
-openApi.set.other(dummyJSON, 'yourOwnPath' || 'components.examples', openApiDef);
+od.set.other(dummyJSON, 'yourOwnPath' || 'components.examples', openApiDef);
 
 ```
 
